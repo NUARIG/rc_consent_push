@@ -16,13 +16,13 @@ $ conda create -n myenv --file conda_env_nopip.txt
 # will install the dependencies into your global system environment
 $ conda activate myenv
 
-# Install pip using the pip requirements file
+# Install pip-based packages using the pip requirements file
 $ pip install -r pip_requirements.txt
 ```
 3. Create a local `instance/` directory to put instance-specific files like the configuration file for DB credentials
 ```bash
 $ mkdir instance
-$ mv application.cfg.example instance/application.cfg
+$ cp application.cfg.example instance/application.cfg
 ```
 
 ## Running
