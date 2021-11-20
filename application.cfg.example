@@ -1,0 +1,4 @@
+SECRET_KEY='dev'
+SQLALCHEMY_DATABASE_URI='postgresql://myuser@localhost/mydatabase'
+SQLALCHEMY_TRACK_MODIFICATIONS=False
+LOGGING_LEVEL='DEBUG'
