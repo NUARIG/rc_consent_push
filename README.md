@@ -25,6 +25,16 @@ $ mkdir instance
 $ cp application.cfg.example instance/application.cfg
 ```
 
+4. Initialize the database. Running the following from the command line will create the schema in your postgresql database.
+
+```bash
+# Optional, if you want to nuke the current scheme
+$ flask dropdb
+
+# This needs to run every time you need to initialize or re-initialize your DB
+$ flask initdb
+```
+
 ## Running
 
 You will need to tell Flask the name of the application by creating the proper environment variables. I typically have a bash script file that I run once whenever I need to start the application in the terminal from the proper conda environment. Here's an example:
