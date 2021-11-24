@@ -48,6 +48,15 @@ def create_app(test_config=None):
     def index():
         return render_template('home.html')
 
+    @app.route("/project/new")
+    def new_project():
+        return render_template('newproject.html')
+
+    @app.route("/project/add", methods = ['post'])
+    def add_project():
+        flash('Adding a project')
+        return redirect(url_for('index'))
+
     ##################
     # Shell commands #
     ##################

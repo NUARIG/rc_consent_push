@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container">
+    <h1>Add new REDCap project to a study</h1>
+    <p>Note: cannot use a project for more than one STU#</p>
+</div>
+<div class="container">
+<form method="post" action="{{ url_for('add_project') }}">
+    <div class="form-group">
+        <label for="stu">Enter STU number here that is assocated with the project</label>
+        <input type="text" placeholder="STU #" id="apitoken" name="api_token">
+    </div>
+    <div class="form-group">
+        <label for="apitoken">Paste API token here</label>
+        <input type="text" placeholder="API Token" id="stu" name="stu">
+    </div>
+    <button type="submit" class="btn btn-secondary">Add Project</button>
+
+</form>
+</div>
+
+{% endblock %}
