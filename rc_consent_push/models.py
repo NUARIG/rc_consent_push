@@ -5,16 +5,12 @@ class Project(db.Model):
     pid = db.Column(db.Integer, primary_key=True,nullable=False, autoincrement=False)
 
     # Other attributes
+    project_title = db.Column(db.String(256))
     stu = db.Column(db.String(128))
     api_token = db.Column(db.String(128))
 
     # Relationships -- you have to use back_populates and not backref so you can have asymmetric cascades
     instruments = db.relationship('Instrument', back_populates='project', cascade = ['all', 'delete', 'delete-orphan'], order_by = 'Instrument.instrument_label')
-
-    # Constraints
-    __table_args__ = (
-        db.UniqueConstraint('stu','pid'),
-    )
 
 class Instrument(db.Model):
 
