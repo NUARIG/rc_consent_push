@@ -18,8 +18,8 @@
             <tbody>
                 {% for project in projects %}
                 <tr>
-                    <td><a href="{{ url_for('index') }}">{ project.stu }}</a></td>
-                    <td><a href="{{ url_for('index') }}">{{ project.pid }}</a></td>
+                    <td><a href="{{ url_for('show_study', stu = project.stu) }}">{{ project.stu }}</a></td>
+                    <td><a href="{{ url_for('show_study_project', stu = project.stu, pid = project.pid) }}">{{ project.pid }}</a></td>
                     <td>{{ project.project_title }}</td>
                 </tr>
                 {% endfor %}

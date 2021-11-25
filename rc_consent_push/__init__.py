@@ -105,6 +105,16 @@ def create_app(test_config=None):
 
     # Studies
 
+    @app.route('/study/<stu>')
+    def show_study(stu):
+        flash(f'You are looking for Study: {stu}')
+        return render_template('base.html')
+
+    @app.route('/study/<stu>/project/<pid>')
+    def show_study_project(stu, pid):
+        flash(f'You are looking for Project: {pid} in Study: {stu}')
+        return render_template('base.html')
+
 
     ##################
     # Shell commands #
