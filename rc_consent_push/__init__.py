@@ -42,11 +42,15 @@ def create_app(test_config=None):
     # ROUTES #
     ##########
 
-    # HOME
+    # HOME: list of projects and STUs with their link outs for convenience
 
     @app.route("/")
     def index():
-        return render_template('home.html')
+        from rc_consent_push import models
+        myprojects = models.Project.query.order_by(models.Project.stu, models.Project.pid).all()
+        return render_template('home.html', projects = myprojects)
+
+    # Project administration
 
     @app.route("/project/new")
     def new_project():
@@ -81,8 +85,26 @@ def create_app(test_config=None):
 
     @app.route("/project/add", methods = ['post'])
     def add_project():
-        flash('Adding a project')
+        from rc_consent_push import redcap,models
+        myproject = models.Project(
+            pid = request.form.get('pid', None),
+            stu = request.form.get('stu', None),
+            project_title = request.form.get('project_title', None),
+            api_token = request.form.get('api_token', None)
+        )
+
+        try: 
+            db.session.add(myproject) 
+            db.session.commit()
+        except RuntimeError as e:
+            flash(f'Could not commit project {myproject.pid} into database','error')
+            return redirect(url_for('index'))
+
+        flash(f'Added project (pid={myproject.pid}, stu={myproject.stu}) to DB')
         return redirect(url_for('index'))
+
+    # Studies
+
 
     ##################
     # Shell commands #
