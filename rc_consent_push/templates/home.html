@@ -2,8 +2,30 @@
 
 {% block content %}
 
+
+
 <div class="container">
-        <h1>Hello World!</h1>
+        <div class="container">These are all the projects that are configured in the system:</div>
+        <div class="container">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th scope="col">STU #</th>
+                    <th scope="col">PID</th>
+                    <th scope="col">Title</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for project in projects %}
+                <tr>
+                    <td><a href="{{ url_for('index') }}">{ project.stu }}</a></td>
+                    <td><a href="{{ url_for('index') }}">{{ project.pid }}</a></td>
+                    <td>{{ project.project_title }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        </div>
 </div>
 
 {% endblock %}
