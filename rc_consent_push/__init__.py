@@ -122,7 +122,6 @@ def create_app(test_config=None):
             flash(f'could not find project = {pid} in study = {stu}')
             return redirect(url_for('index'))
 
-        flash(f'You found Project: {pid} in Study: {stu}')
         return render_template('project.html', project = myproject)
 
 
