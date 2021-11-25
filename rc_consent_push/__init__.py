@@ -115,8 +115,15 @@ def create_app(test_config=None):
 
     @app.route('/study/<stu>/project/<pid>')
     def show_study_project(stu, pid):
-        flash(f'You are looking for Project: {pid} in Study: {stu}')
-        return render_template('base.html')
+        from rc_consent_push import models
+        mystmt = db.select(models.Project).where(models.Project.stu == stu, models.Project.pid == pid)
+        myproject = db.session.execute(mystmt).scalar()
+        if myproject is None:
+            flash(f'could not find project = {pid} in study = {stu}')
+            return redirect(url_for('index'))
+
+        flash(f'You found Project: {pid} in Study: {stu}')
+        return render_template('project.html', project = myproject)
 
 
     ##################
