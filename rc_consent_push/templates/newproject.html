@@ -7,17 +7,17 @@
     <p>Note: cannot use a project for more than one STU#</p>
 </div>
 <div class="container">
-<form method="post" action="{{ url_for('add_project') }}">
+<form method="post" action="{{ url_for('add_confirm_project') }}">
     <div class="form-group">
         <label for="stu">Enter STU number here that is assocated with the project</label>
-        <input type="text" placeholder="STU #" id="apitoken" name="api_token">
+        <input class="form-control" type="text" placeholder="STU #" id="stu" name="stu">
     </div>
     <div class="form-group">
-        <label for="apitoken">Paste API token here</label>
-        <input type="text" placeholder="API Token" id="stu" name="stu">
+        <label for="api_token">Paste API token here</label>
+        <input class="form-control" type="text" placeholder="API Token" id="api_token" name="api_token">
     </div>
     <button type="submit" class="btn btn-secondary">Add Project</button>
-
+    <a class="btn btn-danger" href="{{ url_for('index') }}">Cancel</a>
 </form>
 </div>
 

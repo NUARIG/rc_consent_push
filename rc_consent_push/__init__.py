@@ -52,6 +52,33 @@ def create_app(test_config=None):
     def new_project():
         return render_template('newproject.html')
 
+    @app.route('/project/add_confirm', methods = ['post'])
+    def add_confirm_project():
+        mystu = request.form.get('stu', None)
+        mytoken = request.form.get('api_token', None)
+
+        if not mystu or not mytoken:
+            flash('Need both an STU # and an API TOKEN')
+            return redirect(url_for('index'))
+
+        from rc_consent_push import redcap,models
+
+        # Check if the API token was already used. To enforce that project can only be associated with 1 STU#
+        mycount = models.Project.query.filter(models.Project.api_token==mytoken).count()
+        if mycount > 0: 
+            flash(f'Cannot proceed; {mycount} projects already exist with this API Token', 'error')
+            return redirect(url_for('index'))
+        
+        # Create a project object via REDCap call and populate with fetched attributes AND the STU#
+        try:
+            myproject = redcap.make_project_from_token( mytoken, mystu )
+        except RuntimeError as e:
+            flash(f'There was an error while using the API token to create a project: {e}', 'error')
+            return redirect(url_for('index'))
+
+        flash('Retrieved a project from REDCap')
+        return render_template('addconfirmproject.html', project = myproject)
+
     @app.route("/project/add", methods = ['post'])
     def add_project():
         flash('Adding a project')
