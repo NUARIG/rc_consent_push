@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container"><h1>{{ stu }}</h1></div>
+
+<div class="container">
+        <div class="container">Found {{ projects | length }} projects that belong to {{ stu }}:</div>
+        <div class="container">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th scope="col">PID</th>
+                    <th scope="col">Title</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for project in projects %}
+                <tr>
+                    <td><a href="{{ url_for('show_study_project', stu = project.stu, pid = project.pid) }}">{{ project.pid }}</a></td>
+                    <td>{{ project.project_title }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        </div>
+</div>
+
+{% endblock %}

@@ -47,7 +47,8 @@ def create_app(test_config=None):
     @app.route("/")
     def index():
         from rc_consent_push import models
-        myprojects = models.Project.query.order_by(models.Project.stu, models.Project.pid).all()
+        mystmt = db.select( models.Project ).order_by(models.Project.stu, models.Project.pid)
+        myprojects = db.session.execute( mystmt ).scalars() #use scalars so it's a container of objects not container of rows
         return render_template('home.html', projects = myprojects)
 
     # Project administration
@@ -107,8 +108,10 @@ def create_app(test_config=None):
 
     @app.route('/study/<stu>')
     def show_study(stu):
-        flash(f'You are looking for Study: {stu}')
-        return render_template('base.html')
+        from rc_consent_push import models
+        mystmt = db.select(models.Project).where(models.Project.stu == stu)
+        myresult = db.session.execute(mystmt).scalars().all()
+        return render_template('study.html', stu = stu, projects = myresult)
 
     @app.route('/study/<stu>/project/<pid>')
     def show_study_project(stu, pid):
