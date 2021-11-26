@@ -21,8 +21,20 @@
         <input class="form-control" type="text" id="project_title" name="project_title" value="{{project.project_title}}" readonly>
     </div>
     <div class="form-group">
-        <label for="apitoken">Project ID</label>
+        <label for="pid">Project ID</label>
         <input class="form-control" type="text" id="pid" name="pid" value="{{project.pid}}" readonly>
+    </div>
+    <div class="form-group">
+        <label for="is_longitudinal">longitudinal?</label>
+        <input class="form-control" type="text" id="is_longitudinal" name="is_longitudinal" value="{{project.is_longitudinal}}" readonly>
+    </div>
+    <div class="form-group">
+        <label for="has_repeating_instruments_or_events">Has repeating?</label>
+        <input class="form-control" type="text" id="has_repeating_instruments_or_events" name="has_repeating_instruments_or_events" value="{{project.has_repeating_instruments_or_events}}" readonly>
+    </div>
+    <div class="form-group">
+        <label for="surveys_enabled">Surveys enabled?</label>
+        <input class="form-control" type="text" id="surveys_enabled" name="surveys_enabled" value="{{project.surveys_enabled}}" readonly>
     </div>
     <button type="submit" class="btn btn-secondary">Yes this is correct!</button>
     <a class="btn btn-danger" href="{{ url_for('new_project') }}">Cancel</a>

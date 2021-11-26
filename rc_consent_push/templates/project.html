@@ -8,6 +8,13 @@
 </div>
 <div class="container">
     <h2>{{project.project_title}} - <small><mark>pid {{project.pid}}</mark></small></h2>
+    <p>API Token used: <mark>{{project.api_token}}</mark></p>
+    <p>Is longitudinal? <mark>{{project.is_longitudinal}}</mark></p>
+    <p>Has repeating instruments or events? <mark>{{project.has_repeating_instruments_or_events}}</mark></p>
+    <p>Surveys enabled? <mark>{{project.surveys_enabled}}</mark></p>
+</div>
+<div class="container">
+    <p>This project has <mark><strong>{{ project.instruments | length }} instruments</strong></mark> configured as e-consent forms.</p>
 </div>
 
 </div>

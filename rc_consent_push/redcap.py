@@ -26,7 +26,10 @@ def make_project_from_token( token, stu ):
         pid = myrequestjson.get('project_id', None),
         project_title = myrequestjson.get('project_title', None),
         api_token = token,
-        stu = stu
+        stu = stu,
+        is_longitudinal = myrequestjson.get('is_longitudinal', None),
+        has_repeating_instruments_or_events = myrequestjson.get('has_repeating_instruments_or_events', None),
+        surveys_enabled = myrequestjson.get('surveys_enabled', None)
     )
 
     return myproject

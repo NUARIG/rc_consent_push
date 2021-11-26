@@ -91,7 +91,10 @@ def create_app(test_config=None):
             pid = request.form.get('pid', None),
             stu = request.form.get('stu', None),
             project_title = request.form.get('project_title', None),
-            api_token = request.form.get('api_token', None)
+            api_token = request.form.get('api_token', None),
+            is_longitudinal = request.form.get('is_longitudinal', None),
+            has_repeating_instruments_or_events = request.form.get('has_repeating_instruments_or_events', None),
+            surveys_enabled = request.form.get('surveys_enabled', None)
         )
 
         try: 
@@ -102,7 +105,7 @@ def create_app(test_config=None):
             return redirect(url_for('index'))
 
         flash(f'Added project (pid={myproject.pid}, stu={myproject.stu}) to DB')
-        return redirect(url_for('index'))
+        return redirect(url_for('show_study_project', stu=myproject.stu, pid=myproject.pid))
 
     # Studies
 
