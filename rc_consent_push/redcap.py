@@ -33,3 +33,26 @@ def make_project_from_token( token, stu ):
     )
 
     return myproject
+
+def fetch_project_instruments( myproject ):
+    if not isinstance(myproject, models.Project):
+        raise REDCapError(f'Cannot laod instruments because a Project object was not passed')
+
+    mypayload = _payload_skel
+    mypayload['content'] = 'instrument'
+    mypayload['token'] = myproject.api_token
+    myrequest = requests.post(redcap_url, mypayload)
+    if not myrequest.ok:
+        raise REDCapError('REDCap request failed')
+    myrequestjson = json.loads(myrequest.text)
+
+    myinstruments = list()
+    for myinstrument in myrequestjson:
+        myinstruments.append( models.Instrument (
+            pid = myproject.pid,
+            instrument_name = myinstrument['instrument_name'],
+            instrument_label = myinstrument['instrument_label']
+        ))
+
+    return myinstruments # Returns them as objects in partial ORM bind
+

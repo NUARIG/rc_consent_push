@@ -129,18 +129,49 @@ def create_app(test_config=None):
 
     # Instruments (REDCap forms)
 
-    @app.route('/study/<stu>/project/<pid>/instrument/add_confirm', methods=['post'])
-    def add_confirm_instrument(stu,pid):
-        from rc_consent_push import models
-        myproject = db.session.execute( db.select(models.Project).where(pid == pid) ).scalar()
+    @app.route('/study/<stu>/project/<pid>/instrument/add', methods=['post'])
+    def add_instrument(stu,pid):
+        from rc_consent_push import models, redcap
+        myproject = db.session.execute( db.select(models.Project).where(models.Project.pid == pid) ).scalar()
         if myproject.stu != stu:
             flash('The STU # and Project ID are not associated.', 'error')
             return redirect(request.referrer)
         myinstrument_name = request.form.get('instrument_name', None)
-        if not stu or not pid or not myinstrument_name:
-            flash('STU #, Project ID, and Instrument Name all need to be specified', 'error')
+        myconsent_date_var = request.form.get('consent_date_var', None)
+        mycase_number_var = request.form.get('case_number_var', None)
+
+        if not stu or not pid or not myinstrument_name or not mycase_number_var or not myconsent_date_var:
+            flash('All instrument information are required', 'error')
             return redirect(request.referrer)
-        return render_template('addconfirminstrument.html', pid = pid, stu = stu)
+        
+        try: 
+            all_project_instruments = redcap.fetch_project_instruments(myproject)
+        except RuntimeError as e:
+            flash('There was an error connecting to REDCap to fetch instrument information','error')
+            return redirect(request.referrer)
+
+        myinstrument = None
+        for project_instrument in all_project_instruments:
+            if project_instrument.instrument_name == myinstrument_name:
+                myinstrument = project_instrument
+                break
+
+        if myinstrument is None:
+            flash(f'The instrument name you provided {myinstrument_name} does not exist in the project', 'error')
+            return redirect(request.referrer)
+
+        myinstrument.case_number_var = mycase_number_var
+        myinstrument.consent_date_var = myconsent_date_var
+
+        try:
+            db.session.add(myinstrument)
+            db.session.commit()
+        except Exception as e:
+            flash(f'Could not save instrument {myinstrument.instrument_name} to project {myinstrument.pid}')
+            return redirect(request.referrer)
+
+        flash(f'Added instrument ({myinstrument.instrument_name}) to project ({myinstrument.pid})')
+        return redirect(url_for('show_study_project', pid = pid, stu = stu))
 
 
 

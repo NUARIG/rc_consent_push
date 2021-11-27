@@ -15,18 +15,49 @@
 </div>
 <div class="container">
     <p>This project has <mark><strong>{{ project.instruments | length }} instruments</strong></mark> configured as e-consent forms.</p>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th scope="col">Instrument Name</th>
+                <th scope="col">Instrument Label</th>
+                <th scope="col">Case Number Variable</th>
+                <th scope="col">Consent Date Variable</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for instrument in project.instruments %}
+            <tr>
+                <td>{{ instrument.instrument_name }}</td>
+                <td>{{ instrument.instrument_label }}</td>
+                <td>{{ instrument.case_number_var }}</td>
+                <td>{{ instrument.consent_date_var }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 </div>
 <div>
-    <form method="post" action="{{ url_for('add_confirm_instrument', pid=project.pid, stu=project.stu) }}">
+    <br /><br />
+    <p>To configure an instrument as an e-consent form, add the following information below</p>
+    <form method="post" action="{{ url_for('add_instrument', pid=project.pid, stu=project.stu) }}">
         <input type="hidden" id="stu" name="stu" value="{{project.stu}}">
         <input type="hidden" id="pid" name="pid" value="{{project.pid}}">
         <div class="form-group">
-            <label for="instrument_name">Enter the instrument (form) name here</label>
+            <label for="instrument_name">Instrument name (no spaces, as provided in the data dictionary)</label>
             <input class="form-control" type="text" placeholder="Instrument Name" id="instrument_name" name="instrument_name">
+        </div>
+        <div class="form-group">
+            <label for="case_number_var">The variable to use as the case number</label>
+            <input class="form-control" type="text" placeholder="Case Number Variable" id="case_number_var" name="case_number_var">
+        </div>
+        <div class="form-group">
+            <label for="consent_date_var">The variable that stores the consent date</label>
+            <input class="form-control" type="text" placeholder="Consent Date Variable" id="consent_date_var" name="consent_date_var">
         </div>
         <button type="submit" class="btn btn-secondary">Add Project</button>
     </form>
 </div>
+
 </div>
 {% endblock %}
 
