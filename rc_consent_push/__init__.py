@@ -86,7 +86,7 @@ def create_app(test_config=None):
 
     @app.route("/project/add", methods = ['post'])
     def add_project():
-        from rc_consent_push import redcap,models
+        from rc_consent_push import models
         myproject = models.Project(
             pid = request.form.get('pid', None),
             stu = request.form.get('stu', None),
@@ -126,6 +126,22 @@ def create_app(test_config=None):
             return redirect(url_for('index'))
 
         return render_template('project.html', project = myproject)
+
+    # Instruments (REDCap forms)
+
+    @app.route('/study/<stu>/project/<pid>/instrument/add_confirm', methods=['post'])
+    def add_confirm_instrument(stu,pid):
+        from rc_consent_push import models
+        myproject = db.session.execute( db.select(models.Project).where(pid == pid) ).scalar()
+        if myproject.stu != stu:
+            flash('The STU # and Project ID are not associated.', 'error')
+            return redirect(request.referrer)
+        myinstrument_name = request.form.get('instrument_name', None)
+        if not stu or not pid or not myinstrument_name:
+            flash('STU #, Project ID, and Instrument Name all need to be specified', 'error')
+            return redirect(request.referrer)
+        return render_template('addconfirminstrument.html', pid = pid, stu = stu)
+
 
 
     ##################

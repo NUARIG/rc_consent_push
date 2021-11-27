@@ -16,6 +16,17 @@
 <div class="container">
     <p>This project has <mark><strong>{{ project.instruments | length }} instruments</strong></mark> configured as e-consent forms.</p>
 </div>
+<div>
+    <form method="post" action="{{ url_for('add_confirm_instrument', pid=project.pid, stu=project.stu) }}">
+        <input type="hidden" id="stu" name="stu" value="{{project.stu}}">
+        <input type="hidden" id="pid" name="pid" value="{{project.pid}}">
+        <div class="form-group">
+            <label for="instrument_name">Enter the instrument (form) name here</label>
+            <input class="form-control" type="text" placeholder="Instrument Name" id="instrument_name" name="instrument_name">
+        </div>
+        <button type="submit" class="btn btn-secondary">Add Project</button>
+    </form>
+</div>
 </div>
 {% endblock %}
 
