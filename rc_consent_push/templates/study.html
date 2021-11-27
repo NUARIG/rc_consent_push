@@ -2,11 +2,11 @@
 
 {% block content %}
 
-<div class="container"><h1>{{ stu }}</h1></div>
 
 <div class="container">
-        <div class="container">Found {{ projects | length }} projects that belong to {{ stu }}:</div>
-        <div class="container">
+    <div class="container"><h1>{{ stu }}</h1></div>
+    <div class="container"><p>Found <mark>{{ projects | length }} project</mark> that belong to {{ stu }}:</p></div>
+    <div class="container">
         <table class="table table-striped">
             <thead>
                 <tr>
@@ -23,7 +23,20 @@
                 {% endfor %}
             </tbody>
         </table>
+    </div>
+
+
+    <div class="container">
+    <form method="post" action="{{ url_for('add_confirm_project') }}">
+        <input type="hidden" name="stu" value="{{stu}}">
+        <div class="form-group">
+            <label for="api_token">To associate a new project with this study paste the API token below</label>
+            <input class="form-control" type="text" placeholder="API Token" id="api_token" name="api_token">
         </div>
+        <button type="submit" class="btn btn-secondary">Add Project</button>
+    </form>
+    </div>
+
 </div>
 
 {% endblock %}

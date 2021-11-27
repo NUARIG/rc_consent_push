@@ -63,8 +63,8 @@ def create_app(test_config=None):
         mytoken = request.form.get('api_token', None)
 
         if not mystu or not mytoken:
-            flash('Need both an STU # and an API TOKEN')
-            return redirect(url_for('index'))
+            flash('Need both an STU # and an API TOKEN','error')
+            return redirect(request.referrer)
 
         from rc_consent_push import redcap,models
 
@@ -72,14 +72,14 @@ def create_app(test_config=None):
         mycount = models.Project.query.filter(models.Project.api_token==mytoken).count()
         if mycount > 0: 
             flash(f'Cannot proceed; {mycount} projects already exist with this API Token', 'error')
-            return redirect(url_for('index'))
+            return redirect(request.referrer)
         
         # Create a project object via REDCap call and populate with fetched attributes AND the STU#
         try:
             myproject = redcap.make_project_from_token( mytoken, mystu )
         except RuntimeError as e:
             flash(f'There was an error while using the API token to create a project: {e}', 'error')
-            return redirect(url_for('index'))
+            return redirect(request.referrer)
 
         flash('Retrieved a project from REDCap')
         return render_template('addconfirmproject.html', project = myproject)

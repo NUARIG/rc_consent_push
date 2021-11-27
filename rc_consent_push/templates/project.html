@@ -7,16 +7,15 @@
     <h1 class="text-decoration-none text-dark"><a href="{{ url_for('show_study', stu = project.stu) }}">{{project.stu}}</a></h1>
 </div>
 <div class="container">
-    <h2>{{project.project_title}} - <small><mark>pid {{project.pid}}</mark></small></h2>
-    <p>API Token used: <mark>{{project.api_token}}</mark></p>
-    <p>Is longitudinal? <mark>{{project.is_longitudinal}}</mark></p>
-    <p>Has repeating instruments or events? <mark>{{project.has_repeating_instruments_or_events}}</mark></p>
-    <p>Surveys enabled? <mark>{{project.surveys_enabled}}</mark></p>
+    <h2>{{project.project_title}} <small><mark>pid {{project.pid}}</mark></small></h2>
+    <p>API Token used: <mark>{{project.api_token | truncate(12,False,"****")}}</mark></p>
+    <p>Is longitudinal? <mark>{{"yes" if project.is_longitudinal else "no"}}</mark></p>
+    <p>Has repeating instruments or events? <mark>{{"yes" if project.has_repeating_instruments_or_events else "no"}}</mark></p>
+    <p>Surveys enabled? <mark>{{"yes" if project.surveys_enabled}}</mark></p>
 </div>
 <div class="container">
     <p>This project has <mark><strong>{{ project.instruments | length }} instruments</strong></mark> configured as e-consent forms.</p>
 </div>
-
 </div>
 {% endblock %}
 
