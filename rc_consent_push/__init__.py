@@ -118,14 +118,15 @@ def create_app(test_config=None):
 
     @app.route('/study/<stu>/project/<pid>')
     def show_study_project(stu, pid):
-        from rc_consent_push import models
+        from rc_consent_push import models,redcap
         mystmt = db.select(models.Project).where(models.Project.stu == stu, models.Project.pid == pid)
         myproject = db.session.execute(mystmt).scalar()
         if myproject is None:
             flash(f'could not find project = {pid} in study = {stu}')
             return redirect(url_for('index'))
+        select2_instrument_array = redcap.fetch_project_instruments_as_select2(myproject)
 
-        return render_template('project.html', project = myproject)
+        return render_template('project.html', project = myproject, select2_instrument_array = select2_instrument_array)
 
     # Instruments (REDCap forms)
 

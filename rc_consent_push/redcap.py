@@ -56,3 +56,23 @@ def fetch_project_instruments( myproject ):
 
     return myinstruments # Returns them as objects in partial ORM bind
 
+def fetch_project_instruments_as_select2( project ):
+    if not isinstance(project, models.Project):
+        raise REDCapError(f'Cannot laod instruments because a Project object was not passed')
+
+    mypayload = _payload_skel
+    mypayload['content'] = 'instrument'
+    mypayload['token'] = project.api_token
+    myrequest = requests.post(redcap_url, mypayload)
+    if not myrequest.ok:
+        raise REDCapError('REDCap request failed')
+    myrequestjson = json.loads(myrequest.text)
+    select2_instrument_array = list()
+    select2_instrument_array.append( dict(id='',text='')) #In single select2 you need first option to be blank to show the placeholder text
+    for x in myrequestjson:
+        select2_instrument_array.append( dict(
+            id = x['instrument_name'],
+            text = x['instrument_label']
+        ))
+    return select2_instrument_array
+

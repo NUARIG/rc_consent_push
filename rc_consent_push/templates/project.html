@@ -7,15 +7,10 @@
 <script>
     $(document).ready(function(){
         $('#instrument_name').select2({
-            data: [
-                {id:'',text:''},
-                {text:"group 1",
-                children:
-                    [{id:'aa0',text:"yo mama"},{id:'aa1',text:"so fat"}]
-                }],
+            data: {{select2_instrument_array|tojson}},
             allowClear: true,
             debug:true,
-            placeholder:"select instrument"
+            placeholder:"select your instrument"
         });
     });
 </script>
