@@ -38,11 +38,13 @@ def create_app(test_config=None):
     toolbar.init_app(app)
 
 
-    ##########
-    # ROUTES #
-    ##########
+    ######################
+    # ROUTES and Actions #
+    ######################
 
-    # HOME: list of projects and STUs with their link outs for convenience
+    #####################################################
+    # Backend project configuration and admin functions #
+    #####################################################
 
     @app.route("/")
     def index():
@@ -50,8 +52,6 @@ def create_app(test_config=None):
         mystmt = db.select( models.Project ).order_by(models.Project.stu, models.Project.pid)
         myprojects = db.session.execute( mystmt ).scalars() #use scalars so it's a container of objects not container of rows
         return render_template('home.html', projects = myprojects)
-
-    # Project administration
 
     @app.route("/project/new")
     def new_project():
@@ -107,8 +107,6 @@ def create_app(test_config=None):
         flash(f'Added project (pid={myproject.pid}, stu={myproject.stu}) to DB')
         return redirect(url_for('show_study_project', stu=myproject.stu, pid=myproject.pid))
 
-    # Studies
-
     @app.route('/study/<stu>')
     def show_study(stu):
         from rc_consent_push import models
@@ -136,8 +134,6 @@ def create_app(test_config=None):
             project = myproject, 
             select2_instrument_array = select2_instrument_array,
             select2_field_array = select2_field_array)
-
-    # Instruments (REDCap forms)
 
     @app.route('/study/<stu>/project/<pid>/instrument/add', methods=['post'])
     def add_instrument(stu,pid):
@@ -183,11 +179,9 @@ def create_app(test_config=None):
         flash(f'Added instrument ({myinstrument.instrument_name}) to project ({myinstrument.pid})')
         return redirect(url_for('show_study_project', pid = pid, stu = stu))
 
-
-
-    ##################
-    # Shell commands #
-    ##################
+    ############################
+    # Shell commands for Setup #
+    ############################
     
     @app.cli.command('dropdb')
     def dropdb():
@@ -202,6 +196,17 @@ def create_app(test_config=None):
         db.create_all()
 
 
-    ###########
+    ##############################
+    # Landing routes from REDCap #
+    ##############################
 
+    @app.route('/redcap/push/s', methods = ['get'])
+    def redcap_simple():
+        return render_template('base.html')
+
+    @app.route('/redcap/push/a', methods = ['post'])
+    def redcap_advanced():
+        return render_template('base.html')
+
+    # Needed last step as all this above was an app factory function
     return app
