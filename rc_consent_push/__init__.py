@@ -124,7 +124,11 @@ def create_app(test_config=None):
         if myproject is None:
             flash(f'could not find project = {pid} in study = {stu}')
             return redirect(url_for('index'))
-        select2_instrument_array = redcap.fetch_project_instruments_as_select2(myproject)
+        try: 
+            select2_instrument_array = redcap.fetch_project_instruments_as_select2(myproject)
+        except RuntimeError as e:
+            flash(f'Could not connect to REDCap to get the instrument list','error')
+            return redirect(request.referrer)
 
         return render_template('project.html', project = myproject, select2_instrument_array = select2_instrument_array)
 
