@@ -126,11 +126,16 @@ def create_app(test_config=None):
             return redirect(url_for('index'))
         try: 
             select2_instrument_array = redcap.fetch_project_instruments_as_select2(myproject)
+            select2_field_array = redcap.fetch_project_fields_as_select2(myproject)
         except RuntimeError as e:
             flash(f'Could not connect to REDCap to get the instrument list','error')
             return redirect(request.referrer)
 
-        return render_template('project.html', project = myproject, select2_instrument_array = select2_instrument_array)
+        return render_template(
+            'project.html', 
+            project = myproject, 
+            select2_instrument_array = select2_instrument_array,
+            select2_field_array = select2_field_array)
 
     # Instruments (REDCap forms)
 
@@ -172,7 +177,7 @@ def create_app(test_config=None):
             db.session.add(myinstrument)
             db.session.commit()
         except Exception as e:
-            flash(f'Could not save instrument {myinstrument.instrument_name} to project {myinstrument.pid}')
+            flash(f'Could not save instrument {myinstrument.instrument_name} to project {myinstrument.pid} most likely because the instrument was already saved before.')
             return redirect(request.referrer)
 
         flash(f'Added instrument ({myinstrument.instrument_name}) to project ({myinstrument.pid})')
