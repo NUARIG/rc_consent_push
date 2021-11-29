@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container">
+    <div class="container"><h1>You clicked on a <mark>simple external link</mark> in REDCap</h1></div>
+    <div class="container"><p>This method is likely not to be supported because it relies on a GET method and has no user verification. The dynamic content passed is restricted to <strong>project id <code>(pid)</code></strong>, <strong>record ID <code>(record)</code></strong>, and - if in a longitudinal project - the <strong>current event id <code>(event)</code></strong>. The last two are included if the link is clicked on the left-hand menu while the user is currently viewing a record on a data collection instrument.</p></div>
+    <div>
+        <pre>
+            {{request|pprint}}
+        </pre>
+    </div>
+
+</div>
+
+{% endblock %}

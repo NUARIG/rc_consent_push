@@ -1,6 +1,6 @@
 import os
 import click
-from flask import Flask, render_template, request, flash, current_app
+from flask import Flask, render_template, request, flash, current_app, abort
 from flask import url_for, redirect
 
 from flask_bootstrap import Bootstrap
@@ -50,7 +50,7 @@ def create_app(test_config=None):
     def index():
         from rc_consent_push import models
         mystmt = db.select( models.Project ).order_by(models.Project.stu, models.Project.pid)
-        myprojects = db.session.execute( mystmt ).scalars() #use scalars so it's a container of objects not container of rows
+        myprojects = db.session.execute( mystmt ).scalars() #use scalars so it's a container of objects not container of rows - a python SQLAlchemy thing
         return render_template('home.html', projects = myprojects)
 
     @app.route("/project/new")
@@ -202,11 +202,24 @@ def create_app(test_config=None):
 
     @app.route('/redcap/push/s', methods = ['get'])
     def redcap_simple():
-        return render_template('base.html')
+        return render_template('simplebookmark.html')
 
     @app.route('/redcap/push/a', methods = ['post'])
     def redcap_advanced():
-        return render_template('base.html')
+        from rc_consent_push import redcap
+        myauthkey = request.form.get('authkey', None)
+        if myauthkey is None:
+            abort(401)
 
-    # Needed last step as all this above was an app factory function
+        try:
+            myresponse = redcap.fetch_advanced_link_info(myauthkey)
+        except RuntimeError as e:
+            abort(401)
+
+        return render_template('base.html', redcap_response = myresponse )
+
+    ##################################################################
+    # Needed last step as all this above was an app factory function #
+    ##################################################################
+
     return app

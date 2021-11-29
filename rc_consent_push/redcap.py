@@ -1,3 +1,4 @@
+from re import A
 import requests
 import json
 from flask import current_app
@@ -112,4 +113,16 @@ def fetch_project_fields_as_select2( project ):
         ))
     return select2_field_array
 
+def fetch_advanced_link_info ( authkey ):
+    '''
+    The advanced link feature in project bookmarks only sends an authentication token. You will need to send that back to REDCap to get the other information.
+    '''
+    mypayload = _payload_skel
+    mypayload['authkey'] = authkey
+    myresponse = requests.post(redcap_url, mypayload)
+    if not myresponse.ok:
+        raise REDCapError('Could not finalize REDCap authentication key validation')
+    myresponsejson = json.loads(myresponse.text)
+
+    return myresponsejson
 
