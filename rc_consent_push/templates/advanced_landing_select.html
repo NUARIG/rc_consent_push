@@ -24,6 +24,12 @@
             <div class="col">record = <code>{{redcap_response['get_record'] if redcap_response['get_record'] else 'None'}}</code></div>
             <div class="col">event = <code>{{redcap_response['get_event'] if redcap_response['get_event'] else 'None'}}</code></div>
         </div>
+        <div class="row">
+            <div class="col"><strong>Here are the recorde we fetched from REDCap based on the information above:</strong></div>
+        </div>
+        <div class="row">
+            <div class="col"><pre>{{redcap_records | pprint}}</pre></div>
+        </div>
     </div>
 </div>
 
