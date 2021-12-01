@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container">
+    <div class="container"><h1>You clicked on an <mark>advanced external link</mark> in REDCap</h1></div>
+    <div class="container">
+        <div class="row">
+            <div class="col"><strong>Here is what we received from REDCap via <code>authkey</code> exchange:</strong></div>
+        </div>
+        <div class="row">
+            <div class="col">callback_url = <code>{{redcap_response['callback_url'] | urlize}}</code></div>
+        </div>
+        <div class="row">
+            <div class="col">project_id = <code>{{redcap_response['project_id']}}</code></div>
+            <div class="col">username = <code>{{redcap_response['username']}}</code></div>
+            <div class="col">data_access_group_id = <code>{{redcap_response['data_access_group_id'] if redcap_response['data_access_group_id'] else 'None'}}</code></div>
+            <div class="col">data_access_group_name = <code>{{redcap_response['data_access_group_name'] if redcap_response['data_access_group_name'] else 'None'}}</code></div>
+        </div>
+        <div class="row">
+            <div class="col"><strong>Here is what we received from REDCap via <code>[GET]</code> method from the URL:</strong></div>
+        </div>
+        <div class="row">
+            <div class="col">record = <code>{{redcap_response['get_record'] if redcap_response['get_record'] else 'None'}}</code></div>
+            <div class="col">event = <code>{{redcap_response['get_event'] if redcap_response['get_event'] else 'None'}}</code></div>
+        </div>
+        <div class="row">
+            <div class="col"><strong>Here are the recorde we fetched from REDCap based on the information above:</strong></div>
+        </div>
+        <div class="row">
+            <div class="col"><pre>{{redcap_records | pprint}}</pre></div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

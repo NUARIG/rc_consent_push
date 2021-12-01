@@ -1,7 +1,7 @@
 import os
 import click
 from flask import Flask, render_template, request, flash, current_app, abort
-from flask import url_for, redirect
+from flask import url_for, redirect 
 
 from flask_bootstrap import Bootstrap
 
@@ -202,21 +202,43 @@ def create_app(test_config=None):
 
     @app.route('/redcap/push/s', methods = ['get'])
     def redcap_simple():
+        # We will probably not use this. Kept here as demo of what simple link does.
         return render_template('simplebookmark.html')
 
     @app.route('/redcap/push/a', methods = ['post'])
     def redcap_advanced():
-        from rc_consent_push import redcap
+        from rc_consent_push import redcap,models
         myauthkey = request.form.get('authkey', None)
+
+        # Send a 401 Unauthorized if the token is a dud 
         if myauthkey is None:
             abort(401)
-
         try:
-            myresponse = redcap.fetch_advanced_link_info(myauthkey)
+            my_advanced_link_info = redcap.fetch_advanced_link_info(myauthkey)
         except RuntimeError as e:
             abort(401)
 
-        return render_template('base.html', redcap_response = myresponse )
+        # RECORD and EVENT are appended to the URL not part of the authkey-mediated info
+        my_advanced_link_info['get_record'] = request.args.get('record', None)
+        my_advanced_link_info['get_event'] = request.args.get('event', None)
+
+        # Check if the project referenced is registered in the system and associated with a study
+        # If not registered then Send a 401 Unauthorized error or recover gracefully in CTMS
+        myproject = db.session.execute( db.select(models.Project).where(models.Project.pid == my_advanced_link_info['project_id']) ).scalar()
+        if myproject is None:
+            abort(401)
+
+        # Should probably kick them out if the username (i.e. netid) is not allowed in the study
+        # def check_apl_or_something_in_CTMS( myresponse['username'], myproject.stu ) --> True|False
+        # (Not done here)
+
+        if my_advanced_link_info['get_record'] is None:
+            flash('did not pass a record id, no further action taken to fetch records', 'warning')
+            myrecords = None
+        else:
+            myrecords = redcap.fetch_advanced_link_records(myproject, my_advanced_link_info)
+
+        return render_template('advanced_landing_select.html', redcap_response = my_advanced_link_info, redcap_project = myproject, redcap_records = myrecords)
 
     ##################################################################
     # Needed last step as all this above was an app factory function #
